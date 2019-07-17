@@ -1,5 +1,5 @@
 Vue.component('media', {
-  props: ['_id', 'UsageClass','CheckoutType','MaterialType', 'CheckoutYear', 'Checkouts', 'Title', 'Creator', 'Subjects', 'Publisher', 'PublicationYear'],
+  props: ['_id', 'UsageClass', 'CheckoutType', 'MaterialType', 'CheckoutYear', 'Checkouts', 'Title', 'Creator', 'Subjects', 'Publisher', 'PublicationYear'],
   template: `
     <div class="col col-md-6 col-xl-4">
       <article class="card mt-5"> 
@@ -37,29 +37,30 @@ Vue.component('media', {
       </article>
     </div>
     `,
-    methods: {
-       trimTitle: (str) => {
-        let arr = [];
-        let newStr = '';
-      
-        if (str && str.includes('/')) {
-          arr = str.split(' / ');
+  methods: {
+    trimTitle: (str) => {
+      let arr = [];
+      let newStr = '';
+
+      if (str && str.includes('/')) {
+        arr = str.split(' / ');
+        newStr = arr[0];
+        //newStr = newStr.slice(1);
+        if (newStr.includes('[')) {
+          arr = newStr.split(' [');
           newStr = arr[0];
-          //newStr = newStr.slice(1);
-          if (newStr.includes('[')) {
-            arr = newStr.split(' [');
-            newStr = arr[0];
-          }
-          str = newStr;
         }
-        return str;
-      },
-    }
+        str = newStr;
+      }
+      return str;
+    },
+  }
 });
 
 Vue.component('media-list', {
   props: ['mediaItems'],
   template: `
+  <div>
     <div class="row">
       <media 
         v-for="media in mediaItems"
@@ -76,12 +77,33 @@ Vue.component('media-list', {
         :PublicationYear="media.PublicationYear"> 
       </media>
     </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+        <router-link class="page-link" 
+          :to="{ path: '/page/' + (parseInt($route.params.page || 0) - 1) }">
+          Previous
+        </router-link>
+        <li class="page-item">
+          <router-link class="page-link" to="/page/1">
+            1
+          </router-link>
+        </li>
+        <li class="page-item"><a class="page-link" href="#/page/2">2</a></li>
+        <li class="page-item"><a class="page-link" href="#/page/3">3</a></li>
+        <router-link class="page-link" 
+          :to="{ path: '/page/' + (parseInt($route.params.page || 0) + 1) }">
+          Next
+        </router-link>
+      </ul>
+    </nav>
+  </div>
   `
 })
 
 const filterBar = Vue.component('filter-bar', {
   props: ['mediaItems'],
-  data: function() {
+  data: function () {
     return {
       ord: 'asc'
     };
@@ -95,8 +117,8 @@ const filterBar = Vue.component('filter-bar', {
     </div>
   </div>
   `,
-  methods : {
-    changeOrder: function(ord) {
+  methods: {
+    changeOrder: function (ord) {
       // emit event
       this.ord = ord;
       this.$parent.$emit('filter-bar:orderChanged', ord);
@@ -107,31 +129,47 @@ const filterBar = Vue.component('filter-bar', {
 const mediaItems = Vue.component('mediaItems', {
   created: function () {
     // change order event listener
-    this.$on('filter-bar:orderChanged', 
-    (ord) => {
-      // this.ord gets value from event listener
-      this.ord = ord;
-      this.getMediaItems();
-    })
+    this.$on('filter-bar:orderChanged',
+      (ord) => {
+        // this.ord gets value from event listener
+        this.ord = ord;
+        this.getMediaItems();
+      })
   },
   mounted: function () {
     //get mediaItems
     this.getMediaItems();
   },
-  data: function() {
+  data: function () {
     return {
       ord: 'asc',
       mediaItems: []
     };
   },
   methods: {
-    getMediaItems : function() {
-      axios(`/media/page/0?ord=${this.ord}`)
-      .then((resp) => {
-        this.mediaItems = resp.data;
-      });
+    getMediaItems: function () {
+      axios(`/media/page/${this.$route.params.page || 0}?ord=${this.ord}`)
+        .then((resp) => {
+          this.mediaItems = resp.data;
+        });
     }
   },
+  beforeRouteUpdate: function (to, from, next) {
+    this.getMediaItems();
+    window.scrollTo(0, 0);
+    next();
+  },
+  /*
+  watch: {
+    '$route.params.page': {
+      handler: function () {
+        this.getMediaItems();
+        window.scrollTo(0, 0);
+      },
+      deep: true,
+      immediate: true
+    }
+  },*/
   template: `
     <article class="container">
       <div class="row">
