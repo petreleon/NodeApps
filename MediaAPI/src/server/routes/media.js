@@ -8,40 +8,20 @@ var mediaRoutes = new Router();
 const mediaController = new MediaController(mediaModel);
 
 
-// show first 6 media files (done)
-mediaRoutes.get('/test', (req, res) => {
-  //console.log(req.params['id']);
-  mediaController.getSomeMedia((err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).end();
-    }
-    res.json(result);
-  })
-})
-
-// show by field (done) ex: // http://localhost:3000/media/search?field=Dragnea&page=0
-mediaRoutes.get('/search', (req, res) => {
-  let field = req.query['field'];
-  let page = req.query['page'];
-
-  if (page === undefined) page = 0;
-  mediaController.getMediaByField(page, field, (err, result) => {
-    if(err) return res.status(500).send(JSON.stringify(err));
-    res.json(result);
-  })
-})
-
-//show by pages (done) 
-mediaRoutes.get('/page/:page', (req, res) => {
-  const page = req.params.page;
-  const ord = req.query['ord'];
+// Search query (with optional name)
+mediaRoutes.get('/', (req, res) => {
+  const elemsPerPage = 10;
+  const page = req.query.page || 0;
+  const name = req.query.name;
+  const ord = req.query.ord;
+  const elemPerPage = parseInt(req.query['elemPerPage']) || elemsPerPage;
   let ordParam = (ord === 'asc' ? 1 : -1)
-  console.log(ordParam);
 
-  mediaController.getMediaByPage(
+  mediaController.getMedia(
     page,
+    name,
     ordParam,
+    elemPerPage,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -96,18 +76,5 @@ mediaRoutes.put('/', (req, res) => {
     res.json(result);
   });
 })
-
-// query by publisher
-mediaRoutes.get('/', (req, res) => {
-  let publisher = req.query['publisher'];
-  let page = req.query['page'];
-
-  mediaController.getMediaByPublisher(page, publisher, (err, result) => {
-    if(err) return res.status(500).send(JSON.stringify(err));
-    //res.json(result);
-    res.status(200).send(result);
-  })
-})
-
 
 module.exports = mediaRoutes;
