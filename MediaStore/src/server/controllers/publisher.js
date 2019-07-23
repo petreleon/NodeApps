@@ -3,6 +3,7 @@ class PublisherController {
     this.model = mediaModel;
   }
 
+  // Aggretation request
   get (name, done) {
     this.model.aggregate([
       {
@@ -12,7 +13,12 @@ class PublisherController {
       }, {
         $group: {
           _id: '$Publisher',
-          publications: {$push: '$_id'},
+          publications: {
+            $push:  {
+              id: '$_id',
+              title: '$Title'
+            }
+          },
           minYear: {$min: '$PublicationYear'},
           maxYear: {$max: '$PublicationYear'}
         }
@@ -21,5 +27,7 @@ class PublisherController {
   }
 
 }
+
+
 
 module.exports = PublisherController;
