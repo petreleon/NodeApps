@@ -12,7 +12,8 @@ class PublisherController {
         }
       }, {
         $group: {
-          _id: '$Publisher',
+          _id: '$_id',
+          Publisher: { "$first": '$Publisher' },
           publications: {
             $push:  {
               id: '$_id',

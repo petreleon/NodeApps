@@ -13,10 +13,10 @@ class MediaController {
   getMedia(page, name, order, elemPerPage = 15, done) {
     let searchObj = {};
     if (name) {
-      searchObj = {$text: { $search: name }}
+      searchObj = { $text: { $search: name } }
     }
     this.mediaItems
-      .find(searchObj, 
+      .find(searchObj,
         (err, res) => {
           if (err) return console.log(err);
           return done(null, res);
@@ -29,7 +29,7 @@ class MediaController {
   getMediaCount(name, done) {
     let searchObj = {}
     if (name) {
-      searchObj = {$text: {$search: name}}
+      searchObj = { $text: { $search: name } }
     }
 
     this.mediaItems
@@ -43,10 +43,10 @@ class MediaController {
   createMedia(media, done) {
     console.log('creating new media item');
     new this.mediaItems(media)
-    .save(function (err) {
-      if (err) return done(err);
-      return done(null, 'Item created!');
-    });
+      .save(function (err) {
+        if (err) return done(err);
+        return done(null, 'Item created!');
+      });
   }
 
   deleteMediaById(id, done) {

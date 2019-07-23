@@ -27,7 +27,7 @@ mediaRoutes.get('/', (req, res) => {
   const elemsPerPage = 10;
   const page = req.query.page || 0;
   const name = req.query.name;
-  const ord = req.query.ord;
+  const ord = req.query.order;
   const elemPerPage = parseInt(req.query['elemPerPage']) || elemsPerPage;
   let ordParam = (ord === 'asc' ? 1 : -1)
 

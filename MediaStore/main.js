@@ -5,6 +5,7 @@ var cors = require('cors');
 const path = require('path');
 
 mongoose.set('useFindAndModify', false);
+mongoose.set('debug', true);
 
 const portNo = 3000;
 
