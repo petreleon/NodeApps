@@ -1,10 +1,9 @@
 const routes = [
-  { path: '/media', component: mediaItems },
+  { path: '/media', component: mediaLibrary },
   { path: '/media/add', component: mediaForm },
   { path: '/media/edit', component: mediaForm },
   { path: '/media/:id', component: getDetailedView },
-
-  { path: '/publishers', component: publishersView }
+  { path: '/publisher', component: publishersView }
 ];
 
 const router = new VueRouter({
