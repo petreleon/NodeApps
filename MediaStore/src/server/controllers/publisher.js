@@ -10,25 +10,24 @@ class PublisherController {
         $match: {
           Publisher: name
         }
-      }, {
-        $group: {
-          _id:'$Publisher',
-          Publisher: { "$first": '$Publisher' },
-          publications: {
-            $push: {
-              id: '$_id',
-              title: '$Title',
-              year: "$YEAR"
-            }
-          }
-        }
-      }, 
+      },
       // Sort in descending order
       {
         $sort: {
-          'publication.year': -1
+          'YEAR': -1
         }
-      }
+      },{
+      $group: {
+        _id: '$Publisher',
+        Publisher: { "$first": '$Publisher' },
+        publications: {
+          $push: {
+            id: '$_id',
+            title: '$Title',
+            year: "$YEAR"
+          }
+        }
+      }}
     ]).exec(done);
   }
 

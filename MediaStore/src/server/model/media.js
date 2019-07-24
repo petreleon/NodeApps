@@ -16,6 +16,7 @@ const mediaSchema = new Schema({
     Subjects: String,
     Publisher: String,
     PublicationYear: String,
+    YEAR: Number
 }, 
 {
     collection: `${col}`
