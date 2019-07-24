@@ -10,7 +10,7 @@ mongoose.set('debug', true);
 const portNo = 3000;
 
 // import config with media and collection name
-const config = require('../config/config');
+const config = require('./config/config.js');
 
 // create database connection
 mongoose.connect(

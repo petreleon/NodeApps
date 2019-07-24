@@ -4,7 +4,7 @@ class PublisherController {
   }
 
   // Aggretation request
-  get (name, done) {
+  get(name, done) {
     this.model.aggregate([
       {
         $match: {
@@ -12,18 +12,23 @@ class PublisherController {
         }
       }, {
         $group: {
-          _id: '$_id',
+          _id:'$Publisher',
           Publisher: { "$first": '$Publisher' },
           publications: {
-            $push:  {
+            $push: {
               id: '$_id',
-              title: '$Title'
+              title: '$Title',
+              year: "$YEAR"
             }
-          },
-          minYear: {$min: '$PublicationYear'},
-          maxYear: {$max: '$PublicationYear'}
+          }
         }
-      },
+      }, 
+      // Sort in descending order
+      {
+        $sort: {
+          'publication.year': -1
+        }
+      }
     ]).exec(done);
   }
 
