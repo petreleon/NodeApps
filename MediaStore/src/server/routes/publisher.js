@@ -8,8 +8,20 @@ const publisherController = new PublisherController(mediaModel);
 
 
 publisherRoutes.get('/', (req, res) => {
-  publisherController.get(
-    req.query.name,
+  publisherController.getPublishers(
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).end();
+      }
+      res.json(result);
+    })
+});
+
+
+publisherRoutes.get('/:name', (req, res) => {
+  publisherController.getPublisherByName(
+    req.param['name'],
     (err, result) => {
       if (err) {
         console.log(err);

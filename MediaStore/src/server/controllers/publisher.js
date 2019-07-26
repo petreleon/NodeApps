@@ -4,7 +4,33 @@ class PublisherController {
   }
 
   // Aggretation request
-  get(name, done) {
+  getPublishers(done){
+      this.model.aggregate([
+        {
+          $match: {
+            Publisher: { "$ne": "" }
+          }
+        },
+        {
+          $group: {
+            _id: '$Publisher',
+            Publisher: { "$first": '$Publisher' },
+            minPublicationYear: { "$min": "$YEAR" },
+            maxPublicationYear: { "$max": "$YEAR" },
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $sort: {
+            //count: -1,
+            maxPublicationYear: -1
+          }
+        }
+      ]).limit(50).exec(done);
+    
+  }
+
+  getPublisherByName(name, done) {
     if (name) {
       this.model.aggregate([
         {
@@ -32,30 +58,7 @@ class PublisherController {
         }
       ]).exec(done); 
     }
-    else{
-      this.model.aggregate([
-        {
-          $match: {
-            Publisher: { "$ne": "" }
-          }
-        },
-        {
-          $group: {
-            _id: '$Publisher',
-            Publisher: { "$first": '$Publisher' },
-            minPublicationYear: { "$min": "$YEAR" },
-            maxPublicationYear: { "$max": "$YEAR" },
-            count: { $sum: 1 }
-          }
-        },
-        {
-          $sort: {
-            count: -1,
-            maxPublicationYear: -1
-          }
-        }
-      ]).limit(50).exec(done);
-    }
+    
   }
 
 }
